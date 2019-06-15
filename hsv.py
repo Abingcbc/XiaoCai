@@ -1,8 +1,10 @@
 import cv2
 import numpy as np
 
-cap =  cv2.VideoCapture(1)#获取摄像头图像
-
+'''
+getPointLocation()->获取屏幕上所有激光点质心的坐标，return: list[元素：tuple(x，y)]
+main()->测试用，不要调用
+'''
 #获取激光反射点质心
 def getPointLocation():
     cap=cv2.VideoCapture(1)
