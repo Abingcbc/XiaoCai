@@ -25,20 +25,29 @@ def getPointLocation(cap):
     for m in mu:
         if m['m00']!=0:
             mc.append((int(m['m10']/m['m00']),int(m['m01']/m['m00'])))
-    return mc,img,mask,frame
+    return mc,frame,img,mask
 
 
 def main():
     cap=cv2.VideoCapture(1)
+
     while True:
-        mc,img,mask,frame=getPointLocation(cap)
+        mc,frame,mask,canny=getPointLocation(cap)
         for e in mc:
-            print(e)
             cv2.circle(frame,e,5,(0,0,255),-1)
 
+
+        length=int(frame.shape[1])
+        width=int(frame.shape[0])
+        cv2.line(frame,(int(length/4),0),(int(length/4),int(width)),(255,0,0),3)
+        cv2.line(frame,(int(2*length/4),0),(int(2*length/4),int(width)),(255,0,0),3)
+        cv2.line(frame,(int(3*length/4),0),(int(3*length/4),int(width)),(255,0,0),3)
+        cv2.line(frame,(0,int(width/4)),(length,int(width/4)),(255,0,0),3)
+        cv2.line(frame,(0,int(2*width/4)),(length,int(2*width/4)),(255,0,0),3)
+        cv2.line(frame,(0,int(3*width/4)),(length,int(3*width/4)),(255,0,0),3)
         cv2.imshow("img",frame)
         cv2.imshow("mask",mask)
-        cv2.imshow("canny",img)
+        cv2.imshow("canny",canny)
         if cv2.waitKey(1)&0xff == ord('q'):
             break
 
