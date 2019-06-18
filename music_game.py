@@ -3,6 +3,8 @@ import json
 import random
 import pygame
 import time
+from point_location import getPointLocation
+import cv2
 
 state = 0
 game_map_to_save = {}
@@ -43,18 +45,48 @@ def getNearestBarrier(point, game_map):
             temp_distance = abs(point[0]-p[0]) + abs(point[1]-p[1])
     if temp_distance == 0:
         return -1
-    elif 0 < temp_distance <
+    elif 0 < temp_distance < 50:
+        pygame.mixer.init(frequency=66000)
+        s = pygame.mixer.Sound()
+        s.play()
+        time.sleep(1)
+        pygame.mixer.quit()
+        return 1
+    elif 50 <= temp_distance < 100:
+        pygame.mixer.init(frequency=44000)
+        s = pygame.mixer.Sound()
+        s.play()
+        time.sleep(1)
+        pygame.mixer.quit()
+        return 2
+    elif 100 <= temp_distance < 150:
+        pygame.mixer.init(frequency=22000)
+        s = pygame.mixer.Sound()
+        s.play()
+        time.sleep(1)
+        pygame.mixer.quit()
+        return 3
+    elif 150 <= temp_distance < 200:
+        pygame.mixer.init(frequency=11000)
+        s = pygame.mixer.Sound()
+        s.play()
+        time.sleep(1)
+        pygame.mixer.quit()
+        return 4
+
+
 
 def run():
+    cap = cv2.VideoCapture(0)
     while True:
         files = os.listdir('./data/music_game_map')
         game_map = readMapFromFile(random.randint(0,len(files)))
-        points = getPointPosition()
+        points = getPointLocation(cap)
         if len(points) == 1:
+            result = getNearestBarrier(points[0], game_map)
+            if result == -1:
+                #TODO: game lose music
+                break
+        else:
 
 
-            # pygame.mixer.init()
-            # sound = pygame.mixer.Sound('/Users/cbc/Project/Python/HCI/final_project/data/music_game_map/6856.wav')
-            # sound.play()
-            # time.sleep(1)
-            # pygame.mixer.quit()
