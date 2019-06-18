@@ -12,7 +12,7 @@ def getPointLocation(cap):
     frame=cv2.GaussianBlur(frame,(7,7),0)
     frame=cv2.medianBlur(frame,3)
     mask=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-    _,mask=cv2.threshold(mask,253,255,cv2.THRESH_BINARY)
+    _,mask=cv2.threshold(mask,240,255,cv2.THRESH_BINARY)
     kernal=np.ones((17,17),np.uint8)
     mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,kernal)
     img=cv2.Canny(mask,30,90)
