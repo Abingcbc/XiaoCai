@@ -7,7 +7,6 @@ from io import BytesIO
 # This function should run in a new thread
 def playAIMusic(input_list: list):
     # Assume that mixer has been inited
-    pygame.mixer.init()
     input_list = [str(x) for x in input_list]
     for i in os.listdir('./generated'):
         path_file = os.path.join('./generated',i)
