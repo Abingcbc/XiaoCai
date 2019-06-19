@@ -29,7 +29,7 @@ def main():
     cap=cv2.VideoCapture(1)
 
     while True:
-        mc,frame,mask,canny=getPointLocation(cap)
+        mc,frame,mask=getPointLocation(cap)
         for e in mc:
             cv2.circle(frame,e,5,(0,0,255),-1)
 
@@ -44,7 +44,7 @@ def main():
         cv2.line(frame,(0,int(3*width/4)),(length,int(3*width/4)),(255,0,0),3)
         cv2.imshow("img",frame)
         cv2.imshow("mask",mask)
-        cv2.imshow("canny",canny)
+
         if cv2.waitKey(1)&0xff == ord('q'):
             break
 
