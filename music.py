@@ -1,30 +1,33 @@
 from point_location import getPointLocation
+from gestureRecognition import gestureRecognition
 import pygame.mixer as pmx
 import pygame
 import cv2
 
 pygame.init()
 
-def gestureRecognition(mc):
-	pass
-
-
 def playMusic():
     now_status_x=1
     now_status_y=1
     last_status_x=0
     last_status_y=0
-    cap=cv2.VideoCapture(0)
+    cap=cv2.VideoCapture(1)
+    recognition=gestureRecognition()
+    past=0
     while True:
-        mc,frame,_,_=getPointLocation(cap)
+        mc,frame,mask=getPointLocation(cap)
         width=int(frame.shape[0])
         length=int(frame.shape[1])
+        flag=recognition.recognize(mc)
+
+        if flag:
+            break
+
         if len(mc)==0:
             last_status_y=0
             last_status_x=0
         if len(mc)>=1:
             point=mc[0]
-
             if point[0]<=length/4:
                 now_status_x=1
             elif point[0]<=length/2:
@@ -48,14 +51,18 @@ def playMusic():
             last_status_x=now_status_x
             last_status_y=now_status_y
         for e in mc:
-            cv2.circle(frame,e,5,(0,0,255),-1)
-        cv2.line(frame,(int(length/4),0),(int(length/4),int(width)),(255,0,0),3)
-        cv2.line(frame,(int(2*length/4),0),(int(2*length/4),int(width)),(255,0,0),3)
-        cv2.line(frame,(int(3*length/4),0),(int(3*length/4),int(width)),(255,0,0),3)
-        cv2.line(frame,(0,int(width/4)),(length,int(width/4)),(255,0,0),3)
-        cv2.line(frame,(0,int(2*width/4)),(length,int(2*width/4)),(255,0,0),3)
-        cv2.line(frame,(0,int(3*width/4)),(length,int(3*width/4)),(255,0,0),3)
-        cv2.imshow("frame",frame)
+            cv2.circle(frame,e,2,(0,0,255),-1)
+
+
+        cv2.line(frame,(int(length/4),0),(int(length/4),int(width)),(255,0,0),1)
+        cv2.line(frame,(int(2*length/4),0),(int(2*length/4),int(width)),(255,0,0),1)
+        cv2.line(frame,(int(3*length/4),0),(int(3*length/4),int(width)),(255,0,0),1)
+        cv2.line(frame,(0,int(width/4)),(length,int(width/4)),(255,0,0),1)
+        cv2.line(frame,(0,int(2*width/4)),(length,int(2*width/4)),(255,0,0),1)
+        cv2.line(frame,(0,int(3*width/4)),(length,int(3*width/4)),(255,0,0),1)
+        cv2.imshow("img",frame)
+        cv2.imshow("mask",mask)
+
         cv2.waitKey(1)
     cv2.destroyAllWindows()
 

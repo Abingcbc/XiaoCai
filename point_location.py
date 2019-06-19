@@ -1,22 +1,19 @@
 import cv2
 import numpy as np
 
-'''
-getPointLocation()->获取屏幕上所有激光点质心的坐标，return: list[元素：tuple(x，y)]
-main()->测试用，不要调用
-'''
-#获取激光反射点质心，需输入cap=cv2.VideoCapture(0)
+
 def getPointLocation(cap):
 
     ret,frame = cap.read()
-    frame=cv2.GaussianBlur(frame,(7,7),0)
-    frame=cv2.medianBlur(frame,3)
+    frame=cv2.resize(frame,(120,90))
+    #frame=cv2.GaussianBlur(frame,(3,3),0)
+    #frame=cv2.medianBlur(frame,3)
     mask=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-    _,mask=cv2.threshold(mask,240,255,cv2.THRESH_BINARY)
-    kernal=np.ones((17,17),np.uint8)
+    _,mask=cv2.threshold(mask,250,255,cv2.THRESH_BINARY)
+    kernal=np.ones((4,4),np.uint8)
     mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,kernal)
-    img=cv2.Canny(mask,30,90)
-    _,contours,_=cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    #img=cv2.Canny(mask,30,90)
+    _,contours,_=cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     
     mu=list()
     mc=list()
@@ -25,7 +22,7 @@ def getPointLocation(cap):
     for m in mu:
         if m['m00']!=0:
             mc.append((int(m['m10']/m['m00']),int(m['m01']/m['m00'])))
-    return mc,frame,img,mask
+    return mc,frame,mask
 
 
 def main():
