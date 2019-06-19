@@ -87,6 +87,6 @@ def run():
             if result == -1:
                 #TODO: game lose music
                 break
-        else:
+    
 
 
