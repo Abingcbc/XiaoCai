@@ -66,4 +66,3 @@ def run():
         points = getPointLocation(cap)
 
 
-
