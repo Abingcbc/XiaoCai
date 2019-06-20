@@ -6,6 +6,7 @@ import time
 from point_location import getPointLocation
 import cv2
 import random
+from GestureRecognition import GestureRecognition
 
 
 class Barrier:
@@ -58,11 +59,46 @@ def getNearestBarrier(x, y):
     return min_distance
 
 def playWarningSound(distance):
-    
+    if distance <= 0:
+        pygame.mixer.init()
+        s = pygame.mixer.Sound('data/music_game/music/game_over.wav')
+        s.play()
+        time.sleep(4)
+        pygame.mixer.quit()
+        return -1
+    elif 0 < distance < 20:
+        pygame.mixer.init(frequency=66000)
+        s = pygame.mixer.Sound('data/music_game/music/warning.wav')
+        s.play()
+        time.sleep(1)
+        pygame.mixer.quit()
+        return 1
+    elif 20 <= distance < 40:
+        pygame.mixer.init(frequency=44000)
+        s = pygame.mixer.Sound('data/music_game/music/warning.wav')
+        s.play()
+        time.sleep(1)
+        pygame.mixer.quit()
+        return 2
+    elif 40 <= distance < 60:
+        pygame.mixer.init(frequency=22000)
+        s = pygame.mixer.Sound('data/music_game/music/warning.wav')
+        s.play()
+        time.sleep(1)
+        pygame.mixer.quit()
+        return 3
+    return 4
+
+gesture_recognition = GestureRecognition()
 
 def run():
     cap = cv2.VideoCapture(0)
     while True:
         points = getPointLocation(cap)
-
+        if gesture_recognition.recognize(points):
+            return 1
+        updateBarriers()
+        min_distance = getNearestBarrier(points[0][0], points[0][1])
+        if playWarningSound(min_distance) < 0:
+            return -1
 
