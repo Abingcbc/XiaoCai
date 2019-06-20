@@ -90,7 +90,7 @@ def playMusicWithAI():
                 meme=pmx.Sound('data/music/'+str(now_status_x)+'_'+str(now_status_y)+'.wav')
                 meme.play()
                 if len(musicList)>=maxlen:
-
+                    pass
 
             last_status_x=now_status_x
             last_status_y=now_status_y
