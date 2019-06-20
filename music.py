@@ -1,10 +1,23 @@
 from point_location import getPointLocation
 from gestureRecognition import gestureRecognition
+import ai
 import pygame.mixer as pmx
 import pygame
 import cv2
+import numpy as np
+import threading
 
 pygame.init()
+
+class aiThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.counter = counter
+    def run(self):
+        pass
+
 
 def playMusic():
     now_status_x=1
@@ -13,6 +26,7 @@ def playMusic():
     last_status_y=0
     cap=cv2.VideoCapture(1)
     recognition=gestureRecognition()
+    mat=np.array([[17,21,23,24],[32,44,46,51],[52,53,54,55],[56,66,73,75]])
     while True:
         mc,frame,mask=getPointLocation(cap)
         width=int(frame.shape[0])
@@ -25,25 +39,11 @@ def playMusic():
             last_status_x=0
         if len(mc)>=1:
             point=mc[0]
-            if point[0]<=length/4:
-                now_status_x=1
-            elif point[0]<=length/2:
-                now_status_x=2
-            elif point[0]<=3*length/4:
-                now_status_x=3
-            elif point[0]<=length:
-                now_status_x=4
+            now_status_x=int(point[0]*4/length)
+            now_status_y=int(point[1]*4/width)
 
-            if point[1]<=width/4:
-                now_status_y=1
-            elif point[1]<=width/2:
-                now_status_y=2
-            elif point[1]<=3*width/4:
-                now_status_y=3
-            elif point[1]<=width:
-                now_status_y=4
             if now_status_x!=last_status_x or now_status_y!=last_status_y:
-                meme=pmx.Sound('data/music/'+str(now_status_x)+'_'+str(now_status_y)+'.wav')
+                meme=pmx.Sound('data/music/'+str(mat[now_status_x,now_status_y])+'.wav')
                 meme.play()
             last_status_x=now_status_x
             last_status_y=now_status_y
@@ -84,26 +84,14 @@ def playMusicWithAI():
             last_status_x=0
         if len(mc)>=1:
             point=mc[0]
-            if point[0]<=length/4:
-                now_status_x=1
-            elif point[0]<=length/2:
-                now_status_x=2
-            elif point[0]<=3*length/4:
-                now_status_x=3
-            elif point[0]<=length:
-                now_status_x=4
-
-            if point[1]<=width/4:
-                now_status_y=1
-            elif point[1]<=width/2:
-                now_status_y=2
-            elif point[1]<=3*width/4:
-                now_status_y=3
-            elif point[1]<=width:
-                now_status_y=4
+            now_status_x=int(point[0]*4/length)
+            now_status_y=int(point[1]*4/width)
             if now_status_x!=last_status_x or now_status_y!=last_status_y:
                 meme=pmx.Sound('data/music/'+str(now_status_x)+'_'+str(now_status_y)+'.wav')
                 meme.play()
+                if len(musicList)>=maxlen:
+
+
             last_status_x=now_status_x
             last_status_y=now_status_y
         for e in mc:
