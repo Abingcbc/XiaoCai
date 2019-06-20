@@ -6,11 +6,11 @@ from point_location import getPointLocation
 
 def run():
     with open('resource/music.txt') as file:
-        s = file.readline()
+        s = file.readline().strip()
     sound_list = s.split(' ')
     pygame.mixer.init()
     gensture_recognition = GestureRecognition()
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
     for beat in sound_list:
         s = pygame.mixer.Sound('data/music/'+beat+'.wav')
         s.play()
@@ -19,3 +19,5 @@ def run():
         if gensture_recognition.recognize(points):
             return -1
     return 1
+
+run()

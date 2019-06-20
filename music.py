@@ -1,5 +1,5 @@
 from point_location import getPointLocation
-from gestureRecognition import GestureRecognition
+from GestureRecognition import GestureRecognition
 from ai import playAIMusic
 import pygame.mixer as pmx
 import pygame
@@ -64,7 +64,8 @@ def playMusic():
         cv2.imshow("img",frame)
         cv2.imshow("mask",mask)
 
-        cv2.waitKey(1)
+        if cv2.waitKey(1)==ord('q'):
+            break
     file=open('resource/music.txt','w')
     file.truncate()
     for m in history:
@@ -133,7 +134,7 @@ def main():
     playMusic()
 
 
-
+main()
 
 
 
