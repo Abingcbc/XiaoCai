@@ -5,88 +5,100 @@ import pygame
 import time
 from point_location import getPointLocation
 import cv2
+import random
+from GestureRecognition import GestureRecognition
 
-state = 0
-game_map_to_save = {}
+
+class Barrier:
+    def __init__(self, ID):
+        self.id = ID
+        self.length = 0
+        self.speed = 0
+        self.y = 0
+
+    def init(self):
+        self.length = random.randint(1, 10)
+        self.speed = random.randint(1,4)
+        # barrier's y is the end location of the barrier
+        # it increases every time and when it is greater than 9
+        # it will be reset to 0
+        self.y = -self.length
+
+    def stop(self):
+        self.speed = 0
+        self.length = 0
+        self.y = 0
+
+    def update(self):
+        if self.speed > 0:
+            self.y += self.speed
+            if self.y > 9:
+                self.stop()
+                return -1
+            return 1
+        return 0
 
 
-def drawMap(point_list: list):
-    global game_map_to_save, state
-    if len(point_list) == 1:
+UNIT = 10
+barrier_signal_list = [False]*12
+barrier_list = [Barrier(i) for i in range(10)]
+
+def updateBarriers():
+    for barrier in barrier_list:
+        state = barrier.update()
         if state == 0:
-            game_map_to_save  = {'point': [point_list[0]]}
-            state = 1
-        elif state == 1:
-            game_map_to_save ['point'].append(point_list[0])
-    else:
+            if random.random() > 0.7:
+                barrier.init()
+
+def getNearestBarrier(x, y):
+    min_distance = 9999
+    for index, barrier in enumerate(barrier_list):
+        if barrier.speed > 0:
+            if min(abs(x-index*10), abs(y-barrier.y*10)):
+                min_distance = min(abs(x-index*10), abs(y-barrier.y*10))
+    return min_distance
+
+def playWarningSound(distance):
+    if distance <= 0:
+        pygame.mixer.init()
+        s = pygame.mixer.Sound('data/music_game/music/game_over.wav')
+        s.play()
+        time.sleep(4)
+        pygame.mixer.quit()
         return -1
-
-
-def saveMapToFile():
-    if len(game_map_to_save) == 0:
-        return -1
-    path = './data/music_game_map'
-    files = os.listdir(path)
-    with open(os.path.join(path, 'map' + str(len(files))), 'w') as f:
-        json.dump(game_map_to_save, f)
-    return len(files)
-
-
-def readMapFromFile(map_id):
-    game_map = json.load('./data/music_game_map/map' + str(map_id))
-    return list(game_map.values())
-
-def getNearestBarrier(point, game_map):
-    temp_index = -1
-    temp_distance = 999999
-    for i, p in enumerate(game_map):
-        if abs(point[0]-p[0]) + abs(point[1]-p[1]) < temp_distance:
-            temp_index = i
-            temp_distance = abs(point[0]-p[0]) + abs(point[1]-p[1])
-    if temp_distance == 0:
-        return -1
-    elif 0 < temp_distance < 50:
+    elif 0 < distance < 20:
         pygame.mixer.init(frequency=66000)
-        s = pygame.mixer.Sound()
+        s = pygame.mixer.Sound('data/music_game/music/warning.wav')
         s.play()
         time.sleep(1)
         pygame.mixer.quit()
         return 1
-    elif 50 <= temp_distance < 100:
+    elif 20 <= distance < 40:
         pygame.mixer.init(frequency=44000)
-        s = pygame.mixer.Sound()
+        s = pygame.mixer.Sound('data/music_game/music/warning.wav')
         s.play()
         time.sleep(1)
         pygame.mixer.quit()
         return 2
-    elif 100 <= temp_distance < 150:
+    elif 40 <= distance < 60:
         pygame.mixer.init(frequency=22000)
-        s = pygame.mixer.Sound()
+        s = pygame.mixer.Sound('data/music_game/music/warning.wav')
         s.play()
         time.sleep(1)
         pygame.mixer.quit()
         return 3
-    elif 150 <= temp_distance < 200:
-        pygame.mixer.init(frequency=11000)
-        s = pygame.mixer.Sound()
-        s.play()
-        time.sleep(1)
-        pygame.mixer.quit()
-        return 4
+    return 4
 
-
+gesture_recognition = GestureRecognition()
 
 def run():
     cap = cv2.VideoCapture(0)
     while True:
-        files = os.listdir('./data/music_game_map')
-        game_map = readMapFromFile(random.randint(0,len(files)))
         points = getPointLocation(cap)
-        if len(points) == 1:
-            result = getNearestBarrier(points[0], game_map)
-            if result == -1:
-                #TODO: game lose music
-                break
-    
-
+        if gesture_recognition.recognize(points):
+            return 1
+        updateBarriers()
+        min_distance = getNearestBarrier(points[0][0], points[0][1])
+        if playWarningSound(min_distance) < 0:
+            return -1
 

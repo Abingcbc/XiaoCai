@@ -8,13 +8,13 @@ from io import BytesIO
 def playAIMusic(input_list: list):
     # Assume that mixer has been inited
     input_list = [str(x) for x in input_list]
-    for i in os.listdir('./generated'):
-        path_file = os.path.join('./generated',i)
+    for i in os.listdir('generated'):
+        path_file = os.path.join('generated',i)
         if os.path.isfile(path_file):
             os.remove(path_file)
     sendRequest(input_list)
-    for file in os.listdir('./generated'):
-        file_path = os.path.join('./generated',file)
+    for file in os.listdir('generated'):
+        file_path = os.path.join('generated',file)
         print(file_path)
         pygame.mixer.music.load(file_path)
         clock = pygame.time.Clock()

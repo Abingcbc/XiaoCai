@@ -5,10 +5,8 @@
 # the SWIG interface file instead.
 
 
-
-
-
 from sys import version_info as _swig_python_version_info
+
 if _swig_python_version_info >= (2, 7, 0):
     def swig_import_helper():
         import importlib
@@ -18,6 +16,8 @@ if _swig_python_version_info >= (2, 7, 0):
             return importlib.import_module(mname)
         except ImportError:
             return importlib.import_module('_snowboydetect')
+
+
     _snowboydetect = swig_import_helper()
     del swig_import_helper
 elif _swig_python_version_info >= (2, 6, 0):
@@ -36,6 +36,8 @@ elif _swig_python_version_info >= (2, 6, 0):
             finally:
                 fp.close()
             return _mod
+
+
     _snowboydetect = swig_import_helper()
     del swig_import_helper
 else:
@@ -51,17 +53,18 @@ try:
 except ImportError:
     import __builtin__
 
+
 def _swig_setattr_nondynamic(self, class_type, name, value, static=1):
-    if (name == "thisown"):
+    if name == "thisown":
         return self.this.own(value)
-    if (name == "this"):
+    if name == "this":
         if type(value).__name__ == 'SwigPyObject':
             self.__dict__[name] = value
             return
     method = class_type.__swig_setmethods__.get(name, None)
     if method:
         return method(self, value)
-    if (not static):
+    if not static:
         if _newclass:
             object.__setattr__(self, name, value)
         else:
@@ -75,7 +78,7 @@ def _swig_setattr(self, class_type, name, value):
 
 
 def _swig_getattr(self, class_type, name):
-    if (name == "thisown"):
+    if name == "thisown":
         return self.this.own()
     method = class_type.__swig_getmethods__.get(name, None)
     if method:
@@ -90,13 +93,17 @@ def _swig_repr(self):
         strthis = ""
     return "<%s.%s; %s >" % (self.__class__.__module__, self.__class__.__name__, strthis,)
 
+
 try:
     _object = object
     _newclass = 1
 except __builtin__.Exception:
     class _object:
         pass
+
+
     _newclass = 0
+
 
 class SnowboyDetect(_object):
     __swig_setmethods__ = {}
@@ -144,11 +151,12 @@ class SnowboyDetect(_object):
 
     def BitsPerSample(self):
         return _snowboydetect.SnowboyDetect_BitsPerSample(self)
+
     __swig_destroy__ = _snowboydetect.delete_SnowboyDetect
     __del__ = lambda self: None
+
+
 SnowboyDetect_swigregister = _snowboydetect.SnowboyDetect_swigregister
 SnowboyDetect_swigregister(SnowboyDetect)
 
 # This file is compatible with both classic and new-style classes.
-
-
