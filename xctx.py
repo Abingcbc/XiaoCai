@@ -2,8 +2,12 @@
 
 import snowboydecoder
 import threading
+import pygame
 import time
 from music import playMusic
+import music_game
+import play_previous_music
+from music import playMusicWithAI
 
 # import model
 model_xctx = 'xiaocaitongxue.pmdl'
@@ -55,8 +59,14 @@ def callback_piano():
     global detector_func
     detector_func.terminate()
 
+    pygame.mixer.init()
+    track = pygame.mixer.music.load('X_piano.mp3')
+    pygame.mixer.music.play()
+    time.sleep(1)
+    pygame.mixer.quit()
 
-    #playMusic()
+    playMusic()
+
     wake_up()
 
 def callback_game():
@@ -64,6 +74,13 @@ def callback_game():
     global detector_func
     detector_func.terminate()
 
+    pygame.mixer.init()
+    track = pygame.mixer.music.load('X_game.mp3')
+    pygame.mixer.music.play()
+    time.sleep(2)
+    pygame.mixer.quit()
+
+    music_game.run()
 
     wake_up()
 
@@ -72,13 +89,29 @@ def callback_music():
     global detector_func
     detector_func.terminate()
 
+    pygame.mixer.init()
+    track = pygame.mixer.music.load('X_music')
+    pygame.mixer.music.play()
+    time.sleep(1)
+    pygame.mixer.quit()
+
+    play_previous_music.run()
 
     wake_up()
+
 def callback_ai():
     print("\nai\n")
     global detector_func
     detector_func.terminate()
-   ###
+
+    pygame.mixer.init()
+    track = pygame.mixer.music.load('X_ai.mp3')
+    pygame.mixer.music.play()
+    time.sleep(1)
+    pygame.mixer.quit()
+
+    playMusicWithAI()
+
 
     wake_up()
 
@@ -86,6 +119,12 @@ def callback_xctx():
     print('You said xctx!')
     global detector_xctx
     detector_xctx.terminate()
+
+    pygame.mixer.init()
+    track = pygame.mixer.music.load('Xctx.mp3')
+    pygame.mixer.music.play()
+    time.sleep(9)
+    pygame.mixer.quit()
 
     global detector_func
     detector_func = snowboydecoder.HotwordDetector(model_func,
