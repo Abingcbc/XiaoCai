@@ -15,9 +15,11 @@ def run():
         s = pygame.mixer.Sound('data/music/'+beat+'.wav')
         s.play()
         time.sleep(1)
-        points = getPointLocation(cap)
+        points,frame,mask = getPointLocation(cap)
+
         if gensture_recognition.recognize(points):
             return -1
+
     return 1
 
 run()
