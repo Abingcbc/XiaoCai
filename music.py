@@ -1,5 +1,5 @@
 from point_location import getPointLocation
-from gestureRecognition import gestureRecognition
+from gestureRecognition import GestureRecognition
 import ai
 import pygame.mixer as pmx
 import pygame
@@ -25,7 +25,7 @@ def playMusic():
     last_status_x=0
     last_status_y=0
     cap=cv2.VideoCapture(1)
-    recognition=gestureRecognition()
+    recognition=GestureRecognition()
     mat=np.array([[17,21,23,24],[32,44,46,51],[52,53,54,55],[56,66,73,75]])
     while True:
         mc,frame,mask=getPointLocation(cap)
@@ -90,7 +90,7 @@ def playMusicWithAI():
                 meme=pmx.Sound('data/music/'+str(now_status_x)+'_'+str(now_status_y)+'.wav')
                 meme.play()
                 if len(musicList)>=maxlen:
-
+                    pass
 
             last_status_x=now_status_x
             last_status_y=now_status_y

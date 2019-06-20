@@ -1,6 +1,6 @@
 import time
 
-class gestureRecognition:
+class GestureRecognition:
     def __init__(self):
         self.now=0
         self.past=0
