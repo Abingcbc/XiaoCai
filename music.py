@@ -1,23 +1,25 @@
 from point_location import getPointLocation
 from gestureRecognition import GestureRecognition
-import ai
+from ai import playAIMusic
 import pygame.mixer as pmx
 import pygame
 import cv2
 import numpy as np
+import _thread
 import threading
 
-pygame.init()
-
-class aiThread(threading.Thread):
-    def __init__(self):
+class AIThread (threading.Thread):
+    def __init__(self, threadID, name, mlist):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
-        self.counter = counter
+        self.mlist = mlist
     def run(self):
-        pass
+        playAIMusic(self.mlist)
 
+
+
+pygame.init()
 
 def playMusic():
     now_status_x=1
@@ -26,6 +28,7 @@ def playMusic():
     last_status_y=0
     cap=cv2.VideoCapture(1)
     recognition=GestureRecognition()
+    history=list()
     mat=np.array([[17,21,23,24],[32,44,46,51],[52,53,54,55],[56,66,73,75]])
     while True:
         mc,frame,mask=getPointLocation(cap)
@@ -45,6 +48,7 @@ def playMusic():
             if now_status_x!=last_status_x or now_status_y!=last_status_y:
                 meme=pmx.Sound('data/music/'+str(mat[now_status_x,now_status_y])+'.wav')
                 meme.play()
+                history.append(mat[now_status_x,now_status_y])
             last_status_x=now_status_x
             last_status_y=now_status_y
         for e in mc:
@@ -61,6 +65,10 @@ def playMusic():
         cv2.imshow("mask",mask)
 
         cv2.waitKey(1)
+    file=open('resource/music.txt','w')
+    file.truncate()
+    for m in history:
+        file.write(str(m)+' ')
     cv2.destroyAllWindows()
 
 def playMusicWithAI():
@@ -69,7 +77,9 @@ def playMusicWithAI():
     last_status_x=0
     last_status_y=0
     cap=cv2.VideoCapture(1)
-    recognition=gestureRecognition()
+    recognition=GestureRecognition()
+    mat=np.array([[17,21,23,24],[32,44,46,51],[52,53,54,55],[56,66,73,75]])
+    history=list()
     musicList=list() 
     maxlen=5
     while True:
@@ -87,10 +97,14 @@ def playMusicWithAI():
             now_status_x=int(point[0]*4/length)
             now_status_y=int(point[1]*4/width)
             if now_status_x!=last_status_x or now_status_y!=last_status_y:
-                meme=pmx.Sound('data/music/'+str(now_status_x)+'_'+str(now_status_y)+'.wav')
+                meme=pmx.Sound('data/music/'+str(mat[now_status_x,now_status_y])+'.wav')
                 meme.play()
+                musicList.append(mat[now_status_x,now_status_y])
+                history.append(mat[now_status_x,now_status_y])
                 if len(musicList)>=maxlen:
-                    pass
+                    thread=AIThread(1,'a',musicList)
+                    thread.start()
+                    musicList.clear()
 
             last_status_x=now_status_x
             last_status_y=now_status_y
@@ -108,6 +122,11 @@ def playMusicWithAI():
         cv2.imshow("mask",mask)
 
         cv2.waitKey(1)
+    file=open('resource/music.txt','w')
+    file.truncate()
+    for m in history:
+        file.write(str(m)+' ')
+
     cv2.destroyAllWindows()
         
 def main():

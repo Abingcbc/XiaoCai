@@ -40,7 +40,7 @@ def sendRequest(input_list: list):
     beats_string = '_'.join(input_list)
     r = requests.get('http://47.103.21.70/ai/'+beats_string)
     file_name = str(datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d-%X'))
-    with open('./generated/'+file_name+'.mid', 'wb') as code:
+    with open('generated/'+'xcv'+'.mid', 'wb') as code:
         code.write(r.content)
         print('--- Download Success ---')
 
