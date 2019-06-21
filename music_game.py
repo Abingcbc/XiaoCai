@@ -40,8 +40,7 @@ class Barrier:
 
 
 UNIT = 10
-barrier_signal_list = [False]*12
-barrier_list = [Barrier(i) for i in range(10)]
+barrier_list = [Barrier(i) for i in range(12)]
 
 def updateBarriers():
     for barrier in barrier_list:
@@ -54,8 +53,10 @@ def getNearestBarrier(x, y):
     min_distance = 9999
     for index, barrier in enumerate(barrier_list):
         if barrier.speed > 0:
-            if min(abs(x-index*10), abs(y-barrier.y*10)):
-                min_distance = min(abs(x-index*10), abs(y-barrier.y*10))
+            if index * UNIT < x < (index+1)*UNIT and y + UNIT * barrier.y > 90:
+                return 0
+            elif min(abs(x-index*UNIT), abs(y-barrier.y*UNIT)) < min_distance:
+                min_distance = min(abs(x-index*UNIT), abs(y-barrier.y*UNIT))
     return min_distance
 
 def playWarningSound(distance):
